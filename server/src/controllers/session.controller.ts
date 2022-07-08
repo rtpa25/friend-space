@@ -40,6 +40,24 @@ export async function createSessionHandler(req: Request, res: Response) {
     }
   );
   //return access & refresh token
+  res.cookie('accessToken', accessToken, {
+    maxAge: 900000, //15mins
+    httpOnly: true,
+    domain: 'localhost',
+    path: '/',
+    sameSite: 'strict',
+    secure: false,
+  });
+
+  res.cookie('refreshToken', refreshToken, {
+    maxAge: 3.154e10, //1year
+    httpOnly: true,
+    domain: 'localhost',
+    path: '/',
+    sameSite: 'strict',
+    secure: false,
+  });
+
   res.status(201).send({ accessToken, refreshToken });
 }
 
