@@ -1,6 +1,8 @@
+import axios from 'axios';
 import type { GetServerSideProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import useSwr from 'swr';
-import styles from '../styles/Home.module.css';
+import { requireAuth } from '../HOC/requireAuth';
 import fetcher from '../utils/fetcher';
 
 interface User {
@@ -13,26 +15,47 @@ interface User {
 }
 
 const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
+  const router = useRouter();
+
   const { data } = useSwr<User | null>(
     `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
     fetcher,
     { fallbackData }
   );
 
-  if (data) {
-    return <div>Welcome! {data.name}</div>;
+  const logoutHandler = async () => {
+    try {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/sessions`,
+        { withCredentials: true }
+      );
+      router.push('/auth/login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (!data) {
+    return <div>Please login</div>;
   }
 
-  return <div className={styles.container}>Please login</div>;
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const data = await fetcher(
-    `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
-    context.req.headers
+  return (
+    <div>
+      Welcome! {data.name}
+      <button onClick={logoutHandler}>Logout</button>
+    </div>
   );
-
-  return { props: { fallbackData: data } };
 };
+
+export const getServerSideProps: GetServerSideProps = requireAuth(
+  async (context) => {
+    const data = await fetcher(
+      `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
+      context.req.headers
+    );
+
+    return { props: { fallbackData: data } };
+  }
+);
 
 export default Home;

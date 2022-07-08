@@ -41,8 +41,6 @@ const Login = () => {
     }
   };
 
-  console.log({ errors });
-
   return (
     <div>
       <p>{loginError}</p>
