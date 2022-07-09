@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const createSessionSchema = object({
   email: string({
@@ -42,33 +43,58 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <p>{loginError}</p>
-      <form onSubmit={handleSubmit(submitHandler)}>
-        <div>
-          <label htmlFor='email'>Email</label>
-          <input
-            id='email'
-            type='email'
-            placeholder='rp@rp.io'
-            {...register('email')}
-          />
-          {errors.email && <p>{errors.email.message}</p>}
+    <div className='auth-background'>
+      <div className='auth-container'>
+        <div className='auth-header-container'>
+          <h1 className='auth-header-main-heading'>Welcome Back!</h1>
+          <h4 className='auth-header-sub-heading'>
+            We're so excited to see you again!
+          </h4>
         </div>
+        <form onSubmit={handleSubmit(submitHandler)} className='auth-form'>
+          <div className='auth-input-element-container'>
+            <label htmlFor='email' className='auth-input-label'>
+              Email Adress
+            </label>
+            <input
+              id='email'
+              type='email'
+              placeholder='ronit@gmail.com'
+              {...register('email')}
+              className='auth-input-bar'
+            />
+            {errors.email && (
+              <p className='auth-input-error'>{errors.email.message}</p>
+            )}
+          </div>
 
-        <div>
-          <label htmlFor='password'>Password</label>
-          <input
-            id='password'
-            type='password'
-            placeholder='*****'
-            {...register('password')}
-          />
-          {errors.password && <p>{errors.password.message}</p>}
-        </div>
+          <div className='auth-input-element-container'>
+            <label htmlFor='password' className='auth-input-label'>
+              Password
+            </label>
+            <input
+              id='password'
+              type='password'
+              placeholder='**********'
+              className='auth-input-bar'
+              {...register('password')}
+            />
+            {errors.password && (
+              <p className='auth-input-error'>{errors.password.message}</p>
+            )}
+          </div>
 
-        <button type='submit'>Submit</button>
-      </form>
+          <button type='submit' className='auth-button-primary'>
+            Login
+          </button>
+        </form>
+        <Link href={'/auth/register'}>
+          <div className='auth-redirect-link-div'>
+            Need an account?{' '}
+            <span className='auth-redirect-link-span '>Register</span>
+          </div>
+        </Link>
+      </div>
     </div>
   );
 };

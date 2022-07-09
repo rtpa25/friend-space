@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const createUserSchema = object({
   name: string({
@@ -57,51 +58,91 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <p>{registerError}</p>
-      <form onSubmit={handleSubmit(submitHandler)}>
-        <div className='form-element'>
-          <label htmlFor='name'>Name</label>
-          <input id='name' type='text' placeholder='rp' {...register('name')} />
-          {errors.name && <p>{errors.name.message}</p>}
+    <div className='auth-background'>
+      <div className='auth-container'>
+        <div className='auth-header-container'>
+          <h1 className='auth-header-main-heading'>Create an account</h1>
+          <h4 className='auth-header-sub-heading'>
+            We're so excited to see you!
+          </h4>
         </div>
-        <div>
-          <label htmlFor='email'>Email</label>
-          <input
-            id='email'
-            type='email'
-            placeholder='rp@rp.io'
-            {...register('email')}
-          />
-          {errors.email && <p>{errors.email.message}</p>}
-        </div>
+        <form onSubmit={handleSubmit(submitHandler)} className='auth-form'>
+          <div className='auth-input-element-container'>
+            <label htmlFor='name' className='auth-input-label'>
+              Username
+            </label>
+            <input
+              id='name'
+              type='text'
+              placeholder='Ronit Panda'
+              className='auth-input-bar'
+              {...register('name')}
+            />
+            {errors.name && (
+              <p className='auth-input-error'>{errors.name.message}</p>
+            )}
+          </div>
+          <div className='auth-input-element-container'>
+            <label htmlFor='email' className='auth-input-label'>
+              Email Adress
+            </label>
+            <input
+              id='email'
+              type='email'
+              placeholder='ronit@gmail.com'
+              className='auth-input-bar'
+              {...register('email')}
+            />
+            {errors.email && (
+              <p className='auth-input-error'>{errors.email.message}</p>
+            )}
+          </div>
 
-        <div>
-          <label htmlFor='password'>Password</label>
-          <input
-            id='password'
-            type='password'
-            placeholder='*****'
-            {...register('password')}
-          />
-          {errors.password && <p>{errors.password.message}</p>}
-        </div>
+          <div className='auth-input-element-container'>
+            <label htmlFor='password' className='auth-input-label'>
+              Password
+            </label>
+            <input
+              id='password'
+              type='password'
+              placeholder='**********'
+              className='auth-input-bar'
+              {...register('password')}
+            />
+            {errors.password && (
+              <p className='auth-input-error'>{errors.password.message}</p>
+            )}
+          </div>
 
-        <div>
-          <label htmlFor='passwordConfirmation'>Confirm Password</label>
-          <input
-            id='passwordConfirmation'
-            type='password'
-            placeholder='*****'
-            {...register('passwordConfirmation')}
-          />
-          {errors.passwordConfirmation && (
-            <p>{errors.passwordConfirmation.message}</p>
-          )}
-        </div>
+          <div className='auth-input-element-container'>
+            <label htmlFor='passwordConfirmation' className='auth-input-label'>
+              Confirm Password
+            </label>
+            <input
+              id='passwordConfirmation'
+              type='password'
+              placeholder='**********'
+              className='auth-input-bar'
+              {...register('passwordConfirmation')}
+            />
+            {errors.passwordConfirmation && (
+              <p className='auth-input-error'>
+                {errors.passwordConfirmation.message}
+              </p>
+            )}
+          </div>
 
-        <button type='submit'>Submit</button>
-      </form>
+          <button type='submit' className='auth-button-primary'>
+            Regsiter
+          </button>
+        </form>
+        <Link href={'/auth/login'}>
+          <div className='auth-redirect-link-div'>
+            Already have an account?{' '}
+            <span className='auth-redirect-link-span '>Login</span>
+          </div>
+        </Link>
+      </div>
     </div>
   );
 };

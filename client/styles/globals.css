@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#__next {
+  height: 100%;
+}
+
+@layer components {
+  .auth-background {
+    @apply bg-gray-800 sm:bg-auth-background sm:bg-no-repeat sm:bg-cover h-full flex flex-col sm:justify-center sm:items-center;
+  }
+
+  .auth-container {
+    @apply h-full flex flex-col justify-start items-center sm:bg-gray-800 sm:h-auto sm:w-10/12 md:w-1/2;
+  }
+
+  .auth-header-container {
+    @apply text-center mt-32 mb-9 sm:mt-6;
+  }
+
+  .auth-header-main-heading {
+    @apply text-2xl font-bold text-white;
+  }
+
+  .auth-header-sub-heading {
+    @apply text-gray-400 font-medium;
+  }
+
+  .auth-form {
+    @apply w-full flex flex-col items-center;
+  }
+
+  .auth-input-element-container {
+    @apply flex flex-col mb-5 w-11/12;
+  }
+
+  .auth-input-bar {
+    @apply h-10 p-2 text-gray-200 rounded-md bg-gray-900;
+  }
+
+  .auth-input-error {
+    @apply text-red-500 my-1;
+  }
+
+  .auth-input-label {
+    @apply text-gray-300 font-bold text-xs mb-2 uppercase;
+  }
+
+  .auth-button-primary {
+    @apply text-gray-100 w-11/12 p-2 rounded-md mt-4 bg-emerald-600 hover:bg-emerald-800 ease-in duration-100;
+  }
+
+  .auth-redirect-link-div {
+    @apply flex w-full px-4 py-2 text-sm text-gray-500 sm:ml-4 sm:mb-5;
+  }
+
+  .auth-redirect-link-span {
+    @apply cursor-pointer text-emerald-500 pl-1;
+  }
+}
