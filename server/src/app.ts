@@ -3,7 +3,7 @@ import config from 'config';
 import logger from './utils/logger';
 import routes from './routes';
 import { connect } from './utils/connect';
-import { deserializeUser } from './middlewares/deserializeUser';
+import deserializeUser from './middlewares/deserializeUser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 

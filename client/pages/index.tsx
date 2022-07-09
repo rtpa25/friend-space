@@ -2,6 +2,9 @@ import axios from 'axios';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import useSwr from 'swr';
+import ChatList from '../components/ChatList';
+import ChatPage from '../components/ChatPage';
+import SideBar from '../components/SideBar';
 import { requireAuth } from '../HOC/requireAuth';
 import fetcher from '../utils/fetcher';
 
@@ -40,9 +43,10 @@ const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
   }
 
   return (
-    <div>
-      Welcome! {data.name}
-      <button onClick={logoutHandler}>Logout</button>
+    <div className='flex h-screen'>
+      <SideBar />
+      <ChatList />
+      <ChatPage />
     </div>
   );
 };

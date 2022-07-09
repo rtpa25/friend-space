@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export const requireUser = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const requireUser = (req: Request, res: Response, next: NextFunction) => {
   const user = res.locals.user;
 
   if (!user) {
@@ -13,3 +9,5 @@ export const requireUser = (
 
   return next();
 };
+
+export default requireUser;

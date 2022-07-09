@@ -20,6 +20,7 @@ type CreateSessionInput = TypeOf<typeof createSessionSchema>;
 const Login = () => {
   const router = useRouter();
   const [loginError, setLoginError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -31,6 +32,7 @@ const Login = () => {
 
   const submitHandler = async (values: CreateSessionInput) => {
     try {
+      setLoading(true);
       await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/sessions`,
         values,
@@ -40,6 +42,7 @@ const Login = () => {
     } catch (e: any) {
       setLoginError(e.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -47,9 +50,13 @@ const Login = () => {
       <div className='auth-container'>
         <div className='auth-header-container'>
           <h1 className='auth-header-main-heading'>Welcome Back!</h1>
-          <h4 className='auth-header-sub-heading'>
-            We're so excited to see you again!
-          </h4>
+          {loginError ? (
+            <p className='auth-input-error'>{loginError}</p>
+          ) : (
+            <h4 className='auth-header-sub-heading'>
+              We're so excited to see you again!
+            </h4>
+          )}
         </div>
         <form onSubmit={handleSubmit(submitHandler)} className='auth-form'>
           <div className='auth-input-element-container'>
@@ -85,7 +92,7 @@ const Login = () => {
           </div>
 
           <button type='submit' className='auth-button-primary'>
-            Login
+            {loading ? 'Loading...' : 'Login'}
           </button>
         </form>
         <Link href={'/auth/register'}>

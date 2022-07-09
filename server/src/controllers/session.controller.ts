@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import config from 'config';
 import {
   createSession,
   findSessions,
@@ -6,42 +7,35 @@ import {
 } from '../services/session.service';
 import { validatePassword } from '../services/user.service';
 import { signJwt } from '../utils/jwt.utils';
-import config from 'config';
 
-export async function createSessionHandler(req: Request, res: Response) {
-  //validate the users password
-  const { email, password } = req.body;
-  const user = await validatePassword(email, password);
+export async function createUserSessionHandler(req: Request, res: Response) {
+  // Validate the user's password
+  const user = await validatePassword(req.body);
+
   if (!user) {
-    return res.status(401).send('invalid email or password');
+    return res.status(401).send('Invalid email or password');
   }
-  //create a session
-  const session = await createSession(user._id);
-  //create an access token
+
+  // create a session
+  const session = await createSession(user._id, req.get('user-agent') || '');
+
+  // create an access token
+
   const accessToken = signJwt(
-    {
-      ...user,
-      session,
-    },
-    'accessTokenPrivateKey',
-    {
-      expiresIn: config.get('accessTokenTtl'), //15mins
-    }
+    { ...user, session: session._id },
+    { expiresIn: config.get('accessTokenTtl') } // 15 minutes
   );
-  //create a refresh token
+
+  // create a refresh token
   const refreshToken = signJwt(
-    {
-      ...user,
-      session,
-    },
-    'refreshTokenPrivateKey',
-    {
-      expiresIn: config.get('refreshTokenTtl'), //1year
-    }
+    { ...user, session: session._id },
+    { expiresIn: config.get('refreshTokenTtl') } // 15 minutes
   );
-  //return access & refresh token
+
+  // return access & refresh tokens
+
   res.cookie('accessToken', accessToken, {
-    maxAge: 900000, //15mins
+    maxAge: 3.154e10, // 15 mins
     httpOnly: true,
     domain: 'localhost',
     path: '/',
@@ -50,7 +44,7 @@ export async function createSessionHandler(req: Request, res: Response) {
   });
 
   res.cookie('refreshToken', refreshToken, {
-    maxAge: 3.154e10, //1year
+    maxAge: 3.154e10, // 1 year
     httpOnly: true,
     domain: 'localhost',
     path: '/',
@@ -58,7 +52,7 @@ export async function createSessionHandler(req: Request, res: Response) {
     secure: false,
   });
 
-  res.status(201).send({ accessToken, refreshToken });
+  return res.send({ accessToken, refreshToken });
 }
 
 export async function getUserSessionsHandler(req: Request, res: Response) {
@@ -66,7 +60,7 @@ export async function getUserSessionsHandler(req: Request, res: Response) {
 
   const sessions = await findSessions({ user: userId, valid: true });
 
-  return res.status(200).send(sessions);
+  return res.send(sessions);
 }
 
 export async function deleteSessionHandler(req: Request, res: Response) {

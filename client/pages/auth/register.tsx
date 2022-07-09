@@ -29,6 +29,7 @@ type CreateUserInput = TypeOf<typeof createUserSchema>;
 const Register = () => {
   const router = useRouter();
   const [registerError, setRegisterError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -40,6 +41,7 @@ const Register = () => {
 
   const submitHandler = async (values: CreateUserInput) => {
     try {
+      setLoading(true);
       //create the user
       await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/users`,
@@ -55,6 +57,7 @@ const Register = () => {
     } catch (error: any) {
       setRegisterError(error.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -62,9 +65,13 @@ const Register = () => {
       <div className='auth-container'>
         <div className='auth-header-container'>
           <h1 className='auth-header-main-heading'>Create an account</h1>
-          <h4 className='auth-header-sub-heading'>
-            We're so excited to see you!
-          </h4>
+          {registerError ? (
+            <p className='auth-input-error'>{registerError}</p>
+          ) : (
+            <h4 className='auth-header-sub-heading'>
+              We're so excited to see you!
+            </h4>
+          )}
         </div>
         <form onSubmit={handleSubmit(submitHandler)} className='auth-form'>
           <div className='auth-input-element-container'>
@@ -133,7 +140,7 @@ const Register = () => {
           </div>
 
           <button type='submit' className='auth-button-primary'>
-            Regsiter
+            {loading ? 'Loading...' : 'Register'}
           </button>
         </form>
         <Link href={'/auth/login'}>

@@ -1,12 +1,13 @@
-import { SessionDocument, SessionModel } from '../models/session.model';
-import { FilterQuery, UpdateQuery } from 'mongoose';
 import { get } from 'lodash';
+import config from 'config';
+import { FilterQuery, UpdateQuery } from 'mongoose';
+import SessionModel, { SessionDocument } from '../models/session.model';
 import { verifyJwt, signJwt } from '../utils/jwt.utils';
 import { findUser } from './user.service';
-import config from 'config';
 
-export async function createSession(userId: string) {
-  const session = await SessionModel.create({ user: userId });
+export async function createSession(userId: string, userAgent: string) {
+  const session = await SessionModel.create({ user: userId, userAgent });
+
   return session.toJSON();
 }
 
@@ -21,8 +22,12 @@ export async function updateSession(
   return SessionModel.updateOne(query, update);
 }
 
-export async function reIssueAccessToken(refreshToken: string) {
-  const { decoded } = verifyJwt(refreshToken, 'refreshTokenPublicKey');
+export async function reIssueAccessToken({
+  refreshToken,
+}: {
+  refreshToken: string;
+}) {
+  const { decoded } = verifyJwt(refreshToken);
 
   if (!decoded || !get(decoded, 'session')) return false;
 
@@ -36,7 +41,6 @@ export async function reIssueAccessToken(refreshToken: string) {
 
   const accessToken = signJwt(
     { ...user, session: session._id },
-    'accessTokenPrivateKey',
     { expiresIn: config.get('accessTokenTtl') } // 15 minutes
   );
 
