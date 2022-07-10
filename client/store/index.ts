@@ -1,11 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import friendsReducers from './slices/friends.slice';
 import invitationsReducers from './slices/invitations.slice';
+import chatWindowReducers from './slices/chatWindowData.slice';
+import currentUserReducers from './slices/currentUserData.slice';
 
 export const store = configureStore({
   reducer: {
     friends: friendsReducers,
     invitations: invitationsReducers,
+    chat: chatWindowReducers,
+    currentUser: currentUserReducers,
   },
 });
 

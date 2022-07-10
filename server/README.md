@@ -1,13 +1,5 @@
 # Server for the app friend-space
 
-## Concepts
-
-* REST API principals
-  * CRUD
-  * HTTP methods
-* JWT & refresh tokens
-* Request validation
-
 ## Technologies
 
 * Node.js
@@ -15,6 +7,7 @@
 * TypeScript
 * Express.js & Express.js middleware
 * Zod validation
+* JWT and Session authentication
 
 ## Data flow
 

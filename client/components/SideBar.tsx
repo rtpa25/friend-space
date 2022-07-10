@@ -2,10 +2,13 @@ import { PowerSettingsNew } from '@material-ui/icons';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useAppSelector } from '../hooks/redux';
 import LoadingSpinner from './LoadingSpinner';
 
 const SideBar = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { isOpen } = useAppSelector((state) => state.chat);
+
   const router = useRouter();
 
   const logoutHandler = async () => {
@@ -23,7 +26,10 @@ const SideBar = () => {
   };
 
   return (
-    <div className='w-1/4 bg-slate-900 h-full flex flex-col justify-between md:w-1/12'>
+    <div
+      className={`${
+        isOpen && 'w-0'
+      } w-1/4 bg-slate-900 h-full flex flex-col justify-between md:w-1/12`}>
       <div className='flex flex-col'>
         <button className='bg-violet-600 m-4 rounded-md h-16 text-white ease-out duration-200 hover:bg-violet-900'>
           asd

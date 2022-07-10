@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { User } from '../interfaces/user.interface';
+import { setChatData } from '../store/slices/chatWindowData.slice';
 import { setFriends } from '../store/slices/friends.slice';
 import LoadingSpinner from './LoadingSpinner';
 import Modal from './Modal';
@@ -30,13 +32,18 @@ const FriendList = () => {
     fetchFriends();
   }, []);
 
+  const chatWindowHandler = (user: User) => {
+    dispatch(setChatData({ isOpen: true, user: user }));
+  };
+
   const friendsList = (
     <div className='w-3/4 scroll-m-0'>
       {friends.map((friend) => {
         return (
           <div
             key={friend._id}
-            className='cursor-pointer flex items-center w-full'>
+            className='cursor-pointer flex items-center w-full'
+            onClick={() => chatWindowHandler(friend)}>
             <img
               src={`https://ui-avatars.com/api/?background=5865f2&color=fff&name=${friend.name}&font-size=0.3`}
               alt={friend.name}
