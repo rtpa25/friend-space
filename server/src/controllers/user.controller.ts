@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { omit } from 'lodash';
 import {
   AddFriendSchema,
   AddInviteSchema,
@@ -9,6 +10,8 @@ import {
   createUser,
   addFriend,
   findUser,
+  getAllFriends,
+  getAllInvites,
 } from '../services/user.service';
 import logger from '../utils/logger';
 
@@ -28,7 +31,10 @@ export async function createUserHandler(
 export async function getCurrentUser(req: Request, res: Response) {
   const userId = res.locals.user._id;
   const user = await findUser({ _id: userId });
-  return res.send(user).status(200);
+  if (user) {
+    return res.send(omit(user, 'password')).status(200);
+  }
+  return res.status(404).send('User not found');
 }
 
 export async function addInviteHandler(
@@ -66,4 +72,20 @@ export async function addFriendHandler(
     logger.error(error);
     return res.status(409).send(error.message);
   }
+}
+
+export async function getAllFriendsOfSelfHandler(req: Request, res: Response) {
+  const userId = res.locals.user._id;
+  const friends = (await getAllFriends(userId)).map((friend) =>
+    omit(friend, 'password')
+  );
+  return res.send(friends).status(200);
+}
+
+export async function getAllInvitesOfSelfHandler(req: Request, res: Response) {
+  const userId = res.locals.user._id;
+  const invites = (await getAllInvites(userId)).map((invite) =>
+    omit(invite, 'password')
+  );
+  return res.send(invites).status(200);
 }

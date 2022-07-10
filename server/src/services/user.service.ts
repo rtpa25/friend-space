@@ -56,6 +56,10 @@ export async function addInvite(currentUserId: string, invitedEmail: string) {
     throw new Error('User not found');
   }
 
+  if (invitedUser.friends.includes(currentUser._id)) {
+    throw new Error('User is already your friend');
+  }
+
   if (!invitedUser.invites.includes(currentUser._id)) {
     invitedUser.invites.push(currentUser._id);
     await invitedUser.save();
@@ -100,4 +104,24 @@ export async function addFriend(currentUserId: string, friendEmail: string) {
   return {
     friendUser: omit(friendUser.toJSON(), 'password'),
   };
+}
+
+export async function getAllFriends(userId: string) {
+  const user = await UserModel.findById(userId).populate('friends').lean();
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return user.friends;
+}
+
+export async function getAllInvites(userId: string) {
+  const user = await UserModel.findById(userId).populate('invites').lean();
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return user.invites;
 }

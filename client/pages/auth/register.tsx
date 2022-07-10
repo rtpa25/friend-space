@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const createUserSchema = object({
   name: string({
@@ -30,6 +31,9 @@ const Register = () => {
   const router = useRouter();
   const [registerError, setRegisterError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
   const {
     register,
@@ -105,33 +109,55 @@ const Register = () => {
             )}
           </div>
 
-          <div className='auth-input-element-container'>
+          <div className='auth-input-element-container mb-0'>
             <label htmlFor='password' className='auth-input-label'>
               Password
             </label>
             <input
               id='password'
-              type='password'
+              type={`${isPasswordVisible ? 'text' : 'password'}`}
               placeholder='**********'
               className='auth-input-bar'
               {...register('password')}
             />
+            <div
+              className='text-green-500 cursor-pointer relative bottom-8 left-full w-auto'
+              onClick={() => {
+                setIsPasswordVisible((prevState) => !prevState);
+              }}>
+              {isPasswordVisible ? (
+                <VisibilityOff className='relative right-10 bottom-1' />
+              ) : (
+                <Visibility className='relative right-10 bottom-1' />
+              )}
+            </div>
             {errors.password && (
               <p className='auth-input-error'>{errors.password.message}</p>
             )}
           </div>
 
-          <div className='auth-input-element-container'>
+          <div className='auth-input-element-container mb-0'>
             <label htmlFor='passwordConfirmation' className='auth-input-label'>
               Confirm Password
             </label>
             <input
               id='passwordConfirmation'
-              type='password'
+              type={`${isConfirmPasswordVisible ? 'text' : 'password'}`}
               placeholder='**********'
               className='auth-input-bar'
               {...register('passwordConfirmation')}
             />
+            <div
+              className='text-green-500 cursor-pointer relative bottom-8 left-full w-auto'
+              onClick={() => {
+                setIsConfirmPasswordVisible((prevState) => !prevState);
+              }}>
+              {isConfirmPasswordVisible ? (
+                <VisibilityOff className='relative right-10 bottom-1' />
+              ) : (
+                <Visibility className='relative right-10 bottom-1' />
+              )}
+            </div>
             {errors.passwordConfirmation && (
               <p className='auth-input-error'>
                 {errors.passwordConfirmation.message}

@@ -8,6 +8,8 @@ import {
   addFriendHandler,
   addInviteHandler,
   createUserHandler,
+  getAllFriendsOfSelfHandler,
+  getAllInvitesOfSelfHandler,
   getCurrentUser,
 } from './controllers/user.controller';
 import requireUser from './middlewares/requireUser';
@@ -22,9 +24,13 @@ function routes(app: Express) {
 
   app.get('/api/me', requireUser, getCurrentUser);
 
-  app.patch('/api/invite', requireUser, addInviteHandler);
+  app.get('/api/me/friends', requireUser, getAllFriendsOfSelfHandler);
 
-  app.patch('/api/friend', requireUser, addFriendHandler);
+  app.get('/api/me/invites', requireUser, getAllInvitesOfSelfHandler);
+
+  app.patch('/api/users/invite', requireUser, addInviteHandler);
+
+  app.patch('/api/users/friend', requireUser, addFriendHandler);
 
   app.post(
     '/api/sessions',

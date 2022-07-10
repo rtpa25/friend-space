@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import useSwr from 'swr';
 import ChatList from '../components/ChatList';
 import ChatPage from '../components/ChatPage';
@@ -26,21 +27,11 @@ const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
     { fallbackData }
   );
 
-  const logoutHandler = async () => {
-    try {
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/sessions`,
-        { withCredentials: true }
-      );
+  useEffect(() => {
+    if (!data) {
       router.push('/auth/login');
-    } catch (error) {
-      console.error(error);
     }
-  };
-
-  if (!data) {
-    return <div>Please login</div>;
-  }
+  }, []);
 
   return (
     <div className='flex h-screen'>

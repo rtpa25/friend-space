@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const createSessionSchema = object({
   email: string({
@@ -21,6 +22,7 @@ const Login = () => {
   const router = useRouter();
   const [loginError, setLoginError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const {
     register,
@@ -75,17 +77,28 @@ const Login = () => {
             )}
           </div>
 
-          <div className='auth-input-element-container'>
+          <div className='auth-input-element-container mb-0'>
             <label htmlFor='password' className='auth-input-label'>
               Password
             </label>
             <input
               id='password'
-              type='password'
+              type={`${isPasswordVisible ? 'text' : 'password'}`}
               placeholder='**********'
               className='auth-input-bar'
               {...register('password')}
             />
+            <div
+              className='text-green-500 cursor-pointer relative bottom-8 left-full w-auto'
+              onClick={() => {
+                setIsPasswordVisible((prevState) => !prevState);
+              }}>
+              {isPasswordVisible ? (
+                <VisibilityOff className='relative right-10 bottom-1' />
+              ) : (
+                <Visibility className='relative right-10 bottom-1' />
+              )}
+            </div>
             {errors.password && (
               <p className='auth-input-error'>{errors.password.message}</p>
             )}

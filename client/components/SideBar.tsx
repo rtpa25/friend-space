@@ -1,6 +1,27 @@
 import { PowerSettingsNew } from '@material-ui/icons';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 
 const SideBar = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const logoutHandler = async () => {
+    setIsLoading(true);
+    try {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/sessions`,
+        { withCredentials: true }
+      );
+      router.push('/auth/login');
+    } catch (error: any) {
+      console.error(error);
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className='w-1/4 bg-slate-900 h-full flex flex-col justify-between md:w-1/12'>
       <div className='flex flex-col'>
@@ -18,8 +39,10 @@ const SideBar = () => {
         <button className='flex justify-center items-center bg-slate-900 m-4 rounded-full h-16 text-green-600 border-green-600 border-solid border-2 duration-300 hover:bg-green-600 hover:border-transparent hover:text-white'>
           add
         </button>
-        <button className='flex justify-center items-center bg-slate-900 m-4 rounded-full h-16 text-green-600 border-green-600 border-solid border-2 duration-300 hover:bg-green-600 hover:border-transparent hover:text-white'>
-          <PowerSettingsNew />
+        <button
+          className='flex justify-center items-center bg-slate-900 m-4 rounded-full h-16 text-green-600 border-green-600 border-solid border-2 duration-300 hover:bg-green-600 hover:border-transparent hover:text-white'
+          onClick={logoutHandler}>
+          {isLoading ? <LoadingSpinner /> : <PowerSettingsNew />}
         </button>
       </div>
     </div>
