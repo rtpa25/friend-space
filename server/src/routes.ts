@@ -5,6 +5,8 @@ import {
   deleteSessionHandler,
 } from './controllers/session.controller';
 import {
+  addFriendHandler,
+  addInviteHandler,
   createUserHandler,
   getCurrentUser,
 } from './controllers/user.controller';
@@ -19,6 +21,10 @@ function routes(app: Express) {
   app.post('/api/users', validateResource(createUserSchema), createUserHandler);
 
   app.get('/api/me', requireUser, getCurrentUser);
+
+  app.patch('/api/invite', requireUser, addInviteHandler);
+
+  app.patch('/api/friend', requireUser, addFriendHandler);
 
   app.post(
     '/api/sessions',

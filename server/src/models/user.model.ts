@@ -6,6 +6,8 @@ export interface UserDocument extends mongoose.Document {
   email: string;
   name: string;
   password: string;
+  friends: mongoose.Types.ObjectId[];
+  invites: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<Boolean>;
@@ -16,6 +18,20 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: [],
+      },
+    ],
+    invites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: [],
+      },
+    ],
   },
   {
     timestamps: true,
@@ -23,7 +39,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre('save', async function (next) {
-  let user = this as UserDocument;
+  let user = this;
 
   if (!user.isModified('password')) {
     return next();

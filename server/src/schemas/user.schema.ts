@@ -20,7 +20,26 @@ export const createUserSchema = object({
   }),
 });
 
+export const addInviteSchema = object({
+  body: object({
+    email: string({
+      required_error: 'Email is required',
+    }),
+  }),
+});
+
+export const addFriendSchema = object({
+  body: object({
+    email: string({
+      required_error: 'Email is required',
+    }),
+  }),
+});
+
 export type CreateUserInput = Omit<
   TypeOf<typeof createUserSchema>,
   'body.passwordConfirmation'
 >;
+
+export type AddInviteSchema = TypeOf<typeof addInviteSchema>['body'];
+export type AddFriendSchema = TypeOf<typeof addFriendSchema>['body'];
