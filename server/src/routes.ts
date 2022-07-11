@@ -1,5 +1,9 @@
 import { Express, Request, Response } from 'express';
 import {
+  createMessageHandler,
+  getConversationHandler,
+} from './controllers/message.controller';
+import {
   createUserSessionHandler,
   getUserSessionsHandler,
   deleteSessionHandler,
@@ -41,6 +45,10 @@ function routes(app: Express) {
   app.get('/api/sessions', requireUser, getUserSessionsHandler);
 
   app.delete('/api/sessions', requireUser, deleteSessionHandler);
+
+  app.get('/api/messages', requireUser, getConversationHandler);
+
+  app.post('/api/messages', requireUser, createMessageHandler);
 }
 
 export default routes;
