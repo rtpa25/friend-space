@@ -1,6 +1,7 @@
 import { ArrowBackIosOutlined, Send } from '@material-ui/icons';
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { socket } from '../config/socket.connection';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { Message } from '../interfaces/message.interface';
 import { toggleChatWindow } from '../store/slices/chatWindowData.slice';
@@ -14,6 +15,9 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [istyping, setIsTyping] = useState(false);
   const scrollRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const [messageText, setMessageText] = useState<string>('');
@@ -28,6 +32,7 @@ const ChatPage = () => {
             { withCredentials: true }
           );
           setMessages(res.data);
+          socket.emit('join chat', currentUser._id);
         } catch (error: any) {
           setError(error.message);
         }
@@ -43,7 +48,29 @@ const ChatPage = () => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useMemo(() => {
+    if (currentUser && user) {
+      socket.removeAllListeners();
+      socket.emit('setup', user);
+      socket.on('connected', () => setSocketConnected(true));
+      socket.on('typing', () => setIsTyping(true));
+      socket.on('stop typing', () => setIsTyping(false));
+    }
+  }, []);
+
+  useMemo(() => {
+    socket.on('message recieved', (newMessageRecieved) => {
+      if (newMessageRecieved.sender !== currentUser?._id) {
+        console.log(newMessageRecieved);
+        setMessages((prevState) => {
+          return [...prevState, newMessageRecieved];
+        });
+      }
+    });
+  }, []);
+
   const sendMessageHandler = async () => {
+    socket.emit('stop typing', currentUser?._id);
     const newMessage: Message = {
       _id: generateRandomString(),
       content: messageText,
@@ -55,6 +82,7 @@ const ChatPage = () => {
       setMessages((prevState) => {
         return [...prevState, newMessage];
       });
+      socket.emit('new message', newMessage);
       setMessageText('');
       await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/messages`,
@@ -74,6 +102,29 @@ const ChatPage = () => {
     setMessageText('');
   };
 
+  const typingHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageText(e.target.value);
+
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit('typing', user?._id);
+    }
+
+    let lastTypingTime = new Date().getTime();
+    let timerLength = 3000;
+
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit('stop typing', user?._id);
+        setTyping(false);
+      }
+    }, timerLength);
+  };
+
   const messageContainer = (
     <div className='overflow-y-auto overflow-x-hidden flex flex-col justify-start h-3/4'>
       {messages.map((message) => {
@@ -84,8 +135,8 @@ const ChatPage = () => {
             className={`${
               message.sender === currentUser?._id
                 ? 'bg-slate-900 rounded-br-none self-end'
-                : 'bg-green-700 rounded-bl-none'
-            } text-white w-fit py-2 px-4 rounded-lg  my-2 mx-4`}>
+                : 'bg-green-800 rounded-bl-none'
+            } text-white w-fit py-2 px-4 rounded-xl  my-2 mx-4`}>
             {message.content}
           </div>
         );
@@ -106,7 +157,7 @@ const ChatPage = () => {
   );
 
   return (
-    <div className={`md:w-8/12 bg-slate-700 w-full`}>
+    <div className={`md:w-8/12 bg-slate-700 ${isOpen && 'w-full'}`}>
       <div
         className={`p-2 ${
           !isOpen && 'hidden'
@@ -139,22 +190,29 @@ const ChatPage = () => {
           <hr className='border-gray-500 m-4 md:hidden' />
         </div>
         {loading ? loader : error ? errorCase : messageContainer}
-        <div className='flex justify-center m-4'>
-          <input
-            className='w-full h-10 bg-gray-900 text-gray-100 rounded-md p-4'
-            type='text'
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                sendMessageHandler();
-              }
-            }}
-          />
-          <div
-            className='text-green-500 relative right-7 top-1'
-            onClick={sendMessageHandler}>
-            <Send />
+        <div className='flex flex-col'>
+          {istyping && (
+            <div className='bg-transparent text-green-400 text-center'>
+              <span>{user?.name} is typing.....</span>
+            </div>
+          )}
+          <div className='flex justify-center m-4'>
+            <input
+              className='w-full h-10 bg-gray-900 text-gray-100 rounded-md p-4'
+              type='text'
+              value={messageText}
+              onChange={(e) => typingHandler(e)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  sendMessageHandler();
+                }
+              }}
+            />
+            <div
+              className='text-green-500 relative right-7 top-1'
+              onClick={sendMessageHandler}>
+              <Send />
+            </div>
           </div>
         </div>
       </div>

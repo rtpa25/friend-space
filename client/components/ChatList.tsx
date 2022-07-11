@@ -9,8 +9,8 @@ const ChatList = () => {
   return (
     <div
       className={`${
-        isOpen && 'hidden md:block'
-      } w-3/4 md:w-3/12 bg-slate-800 flex flex-col items-center overflow-y-auto no-scrollbar overflow-x-hidden`}>
+        isOpen ? 'hidden md:flex' : 'w-3/4'
+      } md:w-3/12 bg-slate-800 flex flex-col items-center overflow-y-auto no-scrollbar overflow-x-hidden`}>
       <FriendList />
       <InvitationsList />
     </div>

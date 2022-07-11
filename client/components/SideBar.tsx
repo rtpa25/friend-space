@@ -28,8 +28,8 @@ const SideBar = () => {
   return (
     <div
       className={`${
-        isOpen && 'hidden md:flex'
-      } w-1/4 bg-slate-900 h-full flex flex-col justify-between md:w-1/12`}>
+        isOpen ? 'hidden md:flex' : 'w-1/4'
+      } bg-slate-900 h-full flex flex-col justify-between md:w-1/12`}>
       <div className='flex flex-col'>
         <button className='bg-violet-600 m-4 rounded-md h-16 text-white ease-out duration-200 hover:bg-violet-900'>
           asd
