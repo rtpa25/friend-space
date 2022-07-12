@@ -1,5 +1,13 @@
 import { Express, Request, Response } from 'express';
 import {
+  createGroupHandler,
+  getAllGroupsHandler,
+} from './controllers/group.controller';
+import {
+  createGroupMessageHandler,
+  getGroupMessagesHandler,
+} from './controllers/groupMessage.controller';
+import {
   createMessageHandler,
   getConversationHandler,
 } from './controllers/message.controller';
@@ -49,6 +57,14 @@ function routes(app: Express) {
   app.get('/api/messages', requireUser, getConversationHandler);
 
   app.post('/api/messages', requireUser, createMessageHandler);
+
+  app.post('/api/groups', requireUser, createGroupHandler);
+
+  app.get('/api/groups', requireUser, getAllGroupsHandler);
+
+  app.post('/api/groups/messages', requireUser, createGroupMessageHandler);
+
+  app.get('/api/groups/messages', requireUser, getGroupMessagesHandler);
 }
 
 export default routes;

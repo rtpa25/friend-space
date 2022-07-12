@@ -43,7 +43,7 @@ const SideBar = () => {
       </div>
       <div className='flex flex-col'>
         <button className='flex justify-center items-center bg-slate-900 m-4 rounded-full h-16 text-green-600 border-green-600 border-solid border-2 duration-300 hover:bg-green-600 hover:border-transparent hover:text-white'>
-          add
+          Add
         </button>
         <button
           className='flex justify-center items-center bg-slate-900 m-4 rounded-full h-16 text-green-600 border-green-600 border-solid border-2 duration-300 hover:bg-green-600 hover:border-transparent hover:text-white'
