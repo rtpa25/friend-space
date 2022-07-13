@@ -1,4 +1,4 @@
-import { ArrowBackIosOutlined } from '@material-ui/icons';
+import { ArrowBackIosOutlined, Phone } from '@material-ui/icons';
 import { FC } from 'react';
 import { useAppDispatch } from '../../../hooks/redux';
 import { Group } from '../../../interfaces/group.interface';
@@ -26,14 +26,22 @@ const ChatPageHeader: FC<ChatPageHeaderProps> = ({ isGroup, user, group }) => {
 
   return (
     <div className='sticky'>
-      <div
-        className='cursor-pointer text-green-500 md:hidden'
-        onClick={toggleWindowHandler}>
-        <ArrowBackIosOutlined />
+      <div className='flex justify-between'>
+        <div
+          className='cursor-pointer text-green-500 md:hidden'
+          onClick={toggleWindowHandler}>
+          <ArrowBackIosOutlined />
+        </div>
+        <div className='flex justify-between items-center md:w-full'>
+          <span className='md:m-4 md:text-gray-400 md:block hidden'>
+            Choosen Group: {entity?.name}
+          </span>
+          <div className='mr-4 text-green-500 cursor-pointer'>
+            <Phone />
+          </div>
+        </div>
       </div>
-      <span className='md:m-4 md:text-gray-400 md:block hidden'>
-        Choosen Group: {entity?.name}
-      </span>
+
       <hr className='border-gray-500 m-4' />
       <div className='text-center'>
         <div className='flex m-10 justify-between md:justify-start items-center'>

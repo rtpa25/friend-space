@@ -19,9 +19,12 @@ const MessageInputBar: FC<MessageInputBarProps> = ({
         type='text'
         value={messageText}
         onChange={(e) => typingHandler(e)}
+        placeholder={'Type Something.....'}
         onKeyPress={(e) => {
           if (e.key === 'Enter') {
-            sendMessageHandler();
+            if (messageText != '') {
+              sendMessageHandler();
+            }
           }
         }}
       />
