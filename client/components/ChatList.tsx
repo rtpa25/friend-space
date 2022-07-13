@@ -5,11 +5,14 @@ import InvitationsList from './InvitationsList';
 
 const ChatList = () => {
   const { isOpen } = useAppSelector((state) => state.chat);
+  const { isOpen: isGroupChatOpen } = useAppSelector(
+    (state) => state.groupChat
+  );
 
   return (
     <div
       className={`${
-        isOpen ? 'hidden md:flex' : 'w-3/4'
+        isOpen || isGroupChatOpen ? 'hidden md:flex' : 'w-3/4'
       } md:w-3/12 bg-slate-800 flex flex-col items-center overflow-y-auto no-scrollbar overflow-x-hidden`}>
       <FriendList />
       <InvitationsList />

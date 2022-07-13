@@ -30,9 +30,14 @@ export const ChatWindowDataSlice = createSlice({
     toggleChatWindow: (state: ChatWindowDataState) => {
       state.isOpen = !state.isOpen;
     },
+
+    hideChatWindow: (state: ChatWindowDataState) => {
+      state.isOpen = false;
+    },
   },
 });
 
-export const { setChatData, toggleChatWindow } = ChatWindowDataSlice.actions;
+export const { setChatData, toggleChatWindow, hideChatWindow } =
+  ChatWindowDataSlice.actions;
 
 export default ChatWindowDataSlice.reducer;

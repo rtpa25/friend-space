@@ -5,7 +5,7 @@ import { useAppSelector, useAppDispatch } from '../hooks/redux';
 import { User } from '../interfaces/user.interface';
 import { setFriends } from '../store/slices/friends.slice';
 import { setInvitations } from '../store/slices/invitations.slice';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './UI/LoadingSpinner';
 
 const InvitationsList = () => {
   const [isLoading, setIsLoading] = useState(false);

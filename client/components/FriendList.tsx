@@ -4,8 +4,9 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { User } from '../interfaces/user.interface';
 import { setChatData } from '../store/slices/chatWindowData.slice';
 import { setFriends } from '../store/slices/friends.slice';
-import LoadingSpinner from './LoadingSpinner';
-import Modal from './Modal';
+import { hideGroupChatWindow } from '../store/slices/groupChatWindowData.slice';
+import AddFriendModal from './AddFriendModal';
+import LoadingSpinner from './UI/LoadingSpinner';
 
 const FriendList = () => {
   const [showModal, setShowModal] = useState(false);
@@ -34,6 +35,7 @@ const FriendList = () => {
 
   const chatWindowHandler = (user: User) => {
     dispatch(setChatData({ isOpen: true, user: user }));
+    dispatch(hideGroupChatWindow());
   };
 
   const friendsList = (
@@ -64,7 +66,7 @@ const FriendList = () => {
         Add Friend
       </button>
       {showModal && (
-        <Modal show={showModal} onClose={() => setShowModal(false)} />
+        <AddFriendModal show={showModal} onClose={() => setShowModal(false)} />
       )}
       {isLoading ? (
         <LoadingSpinner />

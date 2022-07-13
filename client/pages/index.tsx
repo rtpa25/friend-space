@@ -4,9 +4,10 @@ import { useEffect } from 'react';
 import useSwr from 'swr';
 import ChatList from '../components/ChatList';
 import ChatPage from '../components/ChatPage';
+import GroupChatPage from '../components/GroupChatPage';
 import SideBar from '../components/SideBar';
 import { requireAuth } from '../HOC/requireAuth';
-import { useAppDispatch } from '../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { User } from '../interfaces/user.interface';
 import { setCurrentUserData } from '../store/slices/currentUserData.slice';
 import fetcher from '../utils/fetcher';
@@ -14,6 +15,8 @@ import fetcher from '../utils/fetcher';
 const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const isChatOpen = useAppSelector((state) => state.chat.isOpen);
+  const isGroupChatOpen = useAppSelector((state) => state.groupChat.isOpen);
 
   const { data } = useSwr<User | null>(
     `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
@@ -33,7 +36,7 @@ const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
     <div className='flex h-screen'>
       <SideBar />
       <ChatList />
-      <ChatPage />
+      {isChatOpen && !isGroupChatOpen ? <ChatPage /> : <GroupChatPage />}
     </div>
   );
 };

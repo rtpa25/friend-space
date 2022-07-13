@@ -3,6 +3,8 @@ import friendsReducers from './slices/friends.slice';
 import invitationsReducers from './slices/invitations.slice';
 import chatWindowReducers from './slices/chatWindowData.slice';
 import currentUserReducers from './slices/currentUserData.slice';
+import groupsReducers from './slices/groups.slice';
+import groupChatWindowReducers from './slices/groupChatWindowData.slice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
     invitations: invitationsReducers,
     chat: chatWindowReducers,
     currentUser: currentUserReducers,
+    groups: groupsReducers,
+    groupChat: groupChatWindowReducers,
   },
 });
 
