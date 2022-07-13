@@ -5,8 +5,11 @@ export const createGroupMessageSchema = object({
     content: string({
       required_error: 'contnent is required',
     }),
-    sender: string({
+    senderId: string({
       required_error: 'senderId is required',
+    }),
+    senderName: string({
+      required_error: 'senderName is required',
     }),
     group: string({
       required_error: 'groupId is required',

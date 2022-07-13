@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { socket } from '../config/socket.connection';
 import { useAppSelector } from '../hooks/redux';
 import { Message } from '../interfaces/message.interface';
@@ -50,7 +50,7 @@ const ChatPage = () => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  useMemo(() => {
+  useEffect(() => {
     if (currentUser && user) {
       socket.removeAllListeners();
       socket.emit('setup', user);
@@ -60,10 +60,9 @@ const ChatPage = () => {
     }
   }, []);
 
-  useMemo(() => {
-    socket.on('message recieved', (newMessageRecieved) => {
+  useEffect(() => {
+    socket.on('message recieved', (newMessageRecieved: Message) => {
       if (newMessageRecieved.sender !== currentUser?._id) {
-        console.log(newMessageRecieved);
         setMessages((prevState) => {
           return [...prevState, newMessageRecieved];
         });
@@ -132,7 +131,11 @@ const ChatPage = () => {
   const errorCase = <ErrorCase error={error} />;
 
   const messageContainer = (
-    <MessageContainer messages={messages} scrollRef={scrollRef} />
+    <MessageContainer
+      isGroup={false}
+      scrollRef={scrollRef}
+      personalMessages={messages}
+    />
   );
 
   return (

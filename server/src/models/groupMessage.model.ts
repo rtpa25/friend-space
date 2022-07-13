@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 export interface GroupMessageDocument extends mongoose.Document {
   content: string;
-  sender: mongoose.Types.ObjectId;
+  senderId: mongoose.Types.ObjectId;
+  senderName: string;
   group: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -11,11 +12,12 @@ export interface GroupMessageDocument extends mongoose.Document {
 const groupMessageSchema = new mongoose.Schema(
   {
     content: { type: String, required: true },
-    sender: {
+    senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
+    senderName: { type: String, required: true },
     group: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Group',

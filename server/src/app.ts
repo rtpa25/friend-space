@@ -7,6 +7,9 @@ import deserializeUser from './middlewares/deserializeUser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
+import { User } from './socket-interfaces/user.interface';
+import { PersonalMessage } from './socket-interfaces/personalMessage.interface';
+import { GrpoupMessage } from './socket-interfaces/groupMessage.interface';
 
 const port = config.get<number>('port');
 
@@ -37,31 +40,41 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  logger.info('a user connected');
   socket.removeAllListeners();
 
-  socket.on('setup', (userData) => {
+  socket.on('setup', (userData: User) => {
     socket.join(userData._id);
     socket.emit('connected');
   });
 
-  socket.on('join chat', (room) => {
+  //room can be the id of inidividual user or group
+  //@description - room can be a userId or a groupId
+  socket.on('join chat', (room: string) => {
     socket.join(room);
-    console.log('User Joined Room: ' + room);
   });
 
-  socket.on('typing', (room) => socket.in(room).emit('typing'));
-  socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
+  //only for private messaging -- rooms are userId
+  socket.on('typing', (room: string) => socket.in(room).emit('typing'));
+  socket.on('stop typing', (room: string) =>
+    socket.in(room).emit('stop typing')
+  );
 
-  socket.on('new message', (newMessageRecieved) => {
+  //on newMessage event, emit to the userId
+  socket.on('new message', (newMessageRecieved: PersonalMessage) => {
     if (newMessageRecieved.reciver === newMessageRecieved.sender) return;
     socket
       .in(newMessageRecieved.reciver)
       .emit('message recieved', newMessageRecieved);
   });
 
-  socket.off('setup', (userData) => {
-    console.log('USER DISCONNECTED');
+  //on newMessage event, emit to the group
+  socket.on('new group message', (newGroupMessageRecieved: GrpoupMessage) => {
+    socket
+      .in(newGroupMessageRecieved.group)
+      .emit('group message recieved', newGroupMessageRecieved);
+  });
+
+  socket.off('setup', (userData: User) => {
     socket.leave(userData._id);
   });
 });

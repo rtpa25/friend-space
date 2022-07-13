@@ -2,12 +2,14 @@ import GroupMessageModel from '../models/groupMessage.model';
 
 export async function createGroupMessage(
   content: string,
-  sender: string,
+  senderId: string,
+  senderName: string,
   group: string
 ) {
-  const groupMessage = await GroupMessageModel.create({
+  const groupMessage = await await GroupMessageModel.create({
     content,
-    sender,
+    senderId,
+    senderName,
     group,
   });
   return groupMessage.toJSON();

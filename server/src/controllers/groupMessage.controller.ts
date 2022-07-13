@@ -14,14 +14,23 @@ export async function createGroupMessageHandler(
   res: Response
 ) {
   try {
-    const { content, group, sender } = req.body;
+    const { content, group, senderId, senderName } = req.body;
 
     const validSenderId = res.locals.user._id;
+    const validSenderName = res.locals.user.name;
 
-    if (validSenderId !== sender) {
+    if (validSenderId !== senderId) {
       throw new Error('You cannot send messages on behalf of other users');
     }
-    const groupMessage = await createGroupMessage(content, sender, group);
+    if (validSenderName !== senderName) {
+      throw new Error('You cannot send messages on behalf of other users');
+    }
+    const groupMessage = await createGroupMessage(
+      content,
+      senderId,
+      senderName,
+      group
+    );
     return res.send(groupMessage).status(201);
   } catch (e: any) {
     logger.error(e);
