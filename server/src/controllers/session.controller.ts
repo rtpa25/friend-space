@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import config from 'config';
 import {
   createSession,
   findSessions,
@@ -7,6 +6,7 @@ import {
 } from '../services/session.service';
 import { validatePassword } from '../services/user.service';
 import { signJwt } from '../utils/jwt.utils';
+import { __isProd__ } from '../utils/isProd';
 
 export async function createUserSessionHandler(req: Request, res: Response) {
   // Validate the user's password
@@ -23,33 +23,31 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
   const accessToken = signJwt(
     { ...user, session: session._id },
-    { expiresIn: config.get('accessTokenTtl') } // 15 minutes
+    { expiresIn: '15m' }
   );
 
   // create a refresh token
   const refreshToken = signJwt(
     { ...user, session: session._id },
-    { expiresIn: config.get('refreshTokenTtl') } // 15 minutes
+    { expiresIn: '1y' }
   );
 
   // return access & refresh tokens
 
   res.cookie('accessToken', accessToken, {
-    maxAge: 3.154e10, // 15 mins
+    maxAge: 3.154e10,
     httpOnly: true,
-    domain: 'localhost',
     path: '/',
     sameSite: 'strict',
-    secure: false,
+    secure: __isProd__ ? true : false,
   });
 
   res.cookie('refreshToken', refreshToken, {
-    maxAge: 3.154e10, // 1 year
+    maxAge: 3.154e10,
     httpOnly: true,
-    domain: 'localhost',
     path: '/',
     sameSite: 'strict',
-    secure: false,
+    secure: __isProd__ ? true : false,
   });
 
   return res.send({ accessToken, refreshToken });
@@ -67,8 +65,15 @@ export async function deleteSessionHandler(req: Request, res: Response) {
   const sessionId = res.locals.user.session;
 
   await updateSession({ _id: sessionId }, { valid: false });
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
+
+  res.clearCookie('accessToken', {
+    sameSite: 'strict',
+    secure: __isProd__ ? true : false,
+  });
+  res.clearCookie('refreshToken', {
+    sameSite: 'strict',
+    secure: __isProd__ ? true : false,
+  });
   return res.send({
     accessToken: null,
     refreshToken: null,

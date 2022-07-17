@@ -1,6 +1,6 @@
 export default {
   port: 8080,
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://www.friendspace.site'],
   dbUri:
     'mongodb+srv://ronit:ronit0123@portfolio-projects.nxiqubj.mongodb.net/?retryWrites=true&w=majority',
   saltWorkFactor: 10,

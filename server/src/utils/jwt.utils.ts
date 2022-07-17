@@ -5,22 +5,32 @@ const privateKey = config.get<string>('privateKey');
 const publicKey = config.get<string>('publicKey');
 
 export function signJwt(object: Object, options?: jwt.SignOptions | undefined) {
-  return jwt.sign(object, privateKey, {
-    ...(options && options),
-    algorithm: 'RS256',
-  });
+  if (privateKey) {
+    return jwt.sign(object, privateKey, {
+      ...(options && options),
+      algorithm: 'RS256',
+    });
+  }
 }
 
 export function verifyJwt(token: string) {
   try {
-    const decoded = jwt.verify(token, publicKey);
-    return {
-      valid: true,
-      expired: false,
-      decoded,
-    };
+    if (publicKey) {
+      const decoded = jwt.verify(token, publicKey);
+
+      return {
+        valid: true,
+        expired: false,
+        decoded,
+      };
+    } else {
+      return {
+        valid: false,
+        expired: false,
+        decoded: null,
+      };
+    }
   } catch (e: any) {
-    // console.error(e);
     return {
       valid: false,
       expired: e.message === 'jwt expired',

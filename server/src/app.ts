@@ -10,17 +10,27 @@ import { Server } from 'socket.io';
 import { User } from './socket-interfaces/user.interface';
 import { PersonalMessage } from './socket-interfaces/personalMessage.interface';
 import { GrpoupMessage } from './socket-interfaces/groupMessage.interface';
+import helmet from 'helmet';
 
 const port = config.get<number>('port');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(
   cors({
-    origin: config.get<string>('origin'),
+    origin: config.get<string[]>('origin'),
     credentials: true,
   })
 );
+
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(deserializeUser);
@@ -34,7 +44,7 @@ const server = app.listen(port, async () => {
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: config.get<string>('origin'),
+    origin: config.get<string[]>('origin'),
     credentials: true,
   },
 });

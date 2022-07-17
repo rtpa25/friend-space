@@ -3,3 +3,6 @@ dist
 build
 .env
 dump.todo
+.env.local
+.next
+.vercel

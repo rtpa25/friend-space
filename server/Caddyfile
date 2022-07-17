@@ -1,0 +1,5 @@
+api.friendspace.site {
+  reverse_proxy rest-api:8080 {
+    header_down Strict-Transport-Security max-age=31536000;
+  }
+}

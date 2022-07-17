@@ -12,6 +12,7 @@ export function requireAuth(gssp: GetServerSideProps) {
           return t;
         }
       });
+
       if (!token) {
         return {
           redirect: {

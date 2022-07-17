@@ -2,6 +2,7 @@ import { get } from 'lodash';
 import { Request, Response, NextFunction } from 'express';
 import { verifyJwt } from '../utils/jwt.utils';
 import { reIssueAccessToken } from '../services/session.service';
+import { __isProd__ } from '../utils/isProd';
 
 const deserializeUser = async (
   req: Request,
@@ -12,8 +13,12 @@ const deserializeUser = async (
     get(req, 'cookies.accessToken') ||
     get(req, 'headers.authorization', '').replace(/^Bearer\s/, '');
 
+  // console.log('accessToken', accessToken);
+
   const refreshToken =
     get(req, 'cookies.refreshToken') || get(req, 'headers.x-refresh');
+
+  // console.log('refreshToken', refreshToken);
 
   if (!accessToken) {
     return next();
@@ -33,12 +38,11 @@ const deserializeUser = async (
       res.setHeader('x-access-token', newAccessToken);
 
       res.cookie('accessToken', newAccessToken, {
-        maxAge: 3.154e10, // 15 mins
+        maxAge: 3.154e10,
         httpOnly: true,
-        domain: 'localhost',
         path: '/',
         sameSite: 'strict',
-        secure: false,
+        secure: __isProd__ ? true : false,
       });
     }
 
