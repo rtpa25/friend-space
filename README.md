@@ -1,6 +1,7 @@
 # Friend-Space
 
 A chat and call app for friends, chat with your friends, call them or make group calls. Do not forget to start the repo, the calling features are still in progress.
+you can find the deployed app here: [Friend-Space](https://www.friendspace.site/)
 
 ## Features
 
