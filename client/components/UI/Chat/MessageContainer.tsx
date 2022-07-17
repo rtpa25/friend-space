@@ -23,6 +23,7 @@ const MessageContainer: FC<MessageContainerProps> = ({
   const personalMessagesContainer = personalMessages?.map((message) => {
     return (
       <PersonalChatBubble
+        key={message._id}
         scrollRef={scrollRef}
         currentUser={currentUser!}
         message={message}
@@ -33,6 +34,7 @@ const MessageContainer: FC<MessageContainerProps> = ({
   const groupMessagesContainer = groupMessages?.map((message) => {
     return (
       <GroupChatBubble
+        key={message._id}
         scrollRef={scrollRef}
         currentUser={currentUser!}
         message={message}

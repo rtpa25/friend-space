@@ -15,7 +15,6 @@ const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
   const dispatch = useAppDispatch();
   const isChatOpen = useAppSelector((state) => state.chat.isOpen);
   const isGroupChatOpen = useAppSelector((state) => state.groupChat.isOpen);
-  const [currentUser, setCurrentUser] = useState<User>();
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -25,22 +24,14 @@ const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
           withCredentials: true,
         }
       );
-      setCurrentUser(data);
-      return data;
+      if (!data) {
+        router.push('/auth/login');
+      } else {
+        dispatch(setCurrentUserData({ user: data }));
+      }
     };
-    const data = fetchCurrentUser()
-      .then((res) => {
-        return res;
-      })
-      .catch((e) => {
-        console.error(e);
-      });
 
-    if (!data) {
-      router.push('/auth/login');
-    } else {
-      dispatch(setCurrentUserData({ user: currentUser }));
-    }
+    fetchCurrentUser();
   }, [dispatch]);
 
   return (
