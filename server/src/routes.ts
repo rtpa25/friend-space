@@ -34,7 +34,7 @@ function routes(app: Express) {
 
   app.post('/api/users', validateResource(createUserSchema), createUserHandler);
 
-  app.get('/api/me', requireUser, getCurrentUser);
+  app.get('/api/me', getCurrentUser);
 
   app.get('/api/me/friends', requireUser, getAllFriendsOfSelfHandler);
 

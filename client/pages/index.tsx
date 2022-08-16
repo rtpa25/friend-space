@@ -1,16 +1,17 @@
 import axios from 'axios';
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ChatList from '../components/ChatList';
 import ChatPage from '../components/ChatPage';
 import GroupChatPage from '../components/GroupChatPage';
 import SideBar from '../components/SideBar';
+import { requireAuth } from '../HOC/requireAuth';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { User } from '../interfaces/user.interface';
 import { setCurrentUserData } from '../store/slices/currentUserData.slice';
 
-const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
+const Home: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isChatOpen = useAppSelector((state) => state.chat.isOpen);
@@ -18,16 +19,21 @@ const Home: NextPage<{ fallbackData: User }> = ({ fallbackData }) => {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const { data } = await axios.get<User>(
-        `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
-        {
-          withCredentials: true,
+      try {
+        const { data } = await axios.get<User>(
+          `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/me`,
+          {
+            withCredentials: true,
+          }
+        );
+        if (!data) {
+          window.location.href = '/auth/login';
+        } else {
+          dispatch(setCurrentUserData({ user: data }));
         }
-      );
-      if (!data) {
-        router.push('/auth/login');
-      } else {
-        dispatch(setCurrentUserData({ user: data }));
+      } catch (error) {
+        window.location.href = '/auth/login';
+        console.error(error);
       }
     };
 
