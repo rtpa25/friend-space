@@ -20,7 +20,7 @@ app.set('trust proxy', 1);
 
 app.use(
   cors({
-    origin: config.get<string[]>('origin'),
+    origin: ['http://localhost:3000', 'https://www.friendspace.site'],
     credentials: true,
   })
 );

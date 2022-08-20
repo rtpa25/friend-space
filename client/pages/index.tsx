@@ -1,6 +1,5 @@
 import axios from 'axios';
-import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import type { NextPage } from 'next';
 import { useEffect } from 'react';
 import ChatList from '../components/ChatList';
 import ChatPage from '../components/ChatPage';
@@ -12,7 +11,6 @@ import { User } from '../interfaces/user.interface';
 import { setCurrentUserData } from '../store/slices/currentUserData.slice';
 
 const Home: NextPage = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const isChatOpen = useAppSelector((state) => state.chat.isOpen);
   const isGroupChatOpen = useAppSelector((state) => state.groupChat.isOpen);
@@ -26,11 +24,8 @@ const Home: NextPage = () => {
             withCredentials: true,
           }
         );
-        if (!data) {
-          window.location.href = '/auth/login';
-        } else {
-          dispatch(setCurrentUserData({ user: data }));
-        }
+
+        dispatch(setCurrentUserData({ user: data }));
       } catch (error) {
         window.location.href = '/auth/login';
         console.error(error);
@@ -48,5 +43,9 @@ const Home: NextPage = () => {
     </div>
   );
 };
+
+export const getServerSideProps = requireAuth(((_context: any) => {
+  return { props: {} };
+}) as any);
 
 export default Home;
